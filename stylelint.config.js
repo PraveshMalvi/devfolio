@@ -2,10 +2,18 @@ module.exports = {
     extends: [
       'stylelint-config-standard',
       'stylelint-config-tailwindcss',
-      'stylelint-config-prettier'
+      'stylelint-config-prettier',
     ],
+    plugins: ['stylelint-order'],
     rules: {
-      // Optional custom rules
-    }
+      // Optional: Custom rules if you want
+      'order/properties-order': [],
+      'at-rule-no-unknown': [
+        true,
+        {
+          ignoreAtRules: ['tailwind', 'apply', 'variants', 'responsive', 'screen'],
+        },
+      ],
+    },
   }
   
