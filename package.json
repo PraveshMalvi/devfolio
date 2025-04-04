@@ -39,8 +39,10 @@
     "globals": "^15.15.0",
     "postcss": "^8.5.3",
     "stylelint": "^16.17.0",
+    "stylelint-config-prettier": "^9.0.5",
     "stylelint-config-standard": "^37.0.0",
     "stylelint-config-tailwindcss": "^1.0.0",
+    "stylelint-order": "^6.0.4",
     "vite": "^6.2.0"
   }
 }
