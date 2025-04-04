@@ -6,7 +6,7 @@ import tsPlugin from '@typescript-eslint/eslint-plugin';
 import tsParser from '@typescript-eslint/parser';
 
 export default [
-  { ignores: ['dist', 'node_modules'] },
+  { ignores: ['dist', 'node_modules', 'prettier.config.js', 'stylelint.config.js'] },
 
   // JavaScript and JSX files
   {
