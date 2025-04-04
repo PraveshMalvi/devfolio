@@ -2,7 +2,7 @@ module.exports = {
     extends: [
       'stylelint-config-standard',
       'stylelint-config-tailwindcss',
-      'stylelint-config-prettier',
+      // 'stylelint-config-prettier',
     ],
     plugins: ['stylelint-order'],
     rules: {
