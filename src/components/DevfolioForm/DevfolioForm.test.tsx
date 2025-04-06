@@ -10,12 +10,11 @@ beforeEach(() => {
   setBio('');
   setSkills([]);
 
-  // ✅ Always mock alert globally
   window.alert = jest.fn();
 });
 
 afterEach(() => {
-  jest.clearAllMocks(); // ✅ Clear mocks between tests
+  jest.clearAllMocks();
 });
 
 describe('DevfolioForm', () => {
@@ -32,67 +31,49 @@ describe('DevfolioForm', () => {
   test('can add and remove project fields', () => {
     render(<DevfolioForm />);
     const addBtn = screen.getByText(/Add Project \+/i);
+
+    // Add two new project fields (total should become 3)
     fireEvent.click(addBtn);
     fireEvent.click(addBtn);
 
-    const projectTitles = screen.getAllByPlaceholderText('Project Title');
+    const projectTitles = screen.getAllByPlaceholderText(/Project Title/i);
     expect(projectTitles.length).toBe(3);
 
     const removeButtons = screen.getAllByText('x');
     fireEvent.click(removeButtons[0]);
 
-    const remainingProjects = screen.getAllByPlaceholderText('Project Title');
+    const remainingProjects = screen.getAllByPlaceholderText(/Project Title/i);
     expect(remainingProjects.length).toBe(2);
   });
 
   test('submits form with valid data and resets fields', async () => {
     render(<DevfolioForm />);
 
-    // ✅ Check initial value
     const nameInput = screen.getByPlaceholderText(/Enter your name/i);
+    const emailInput = screen.getByPlaceholderText(/Enter your email/i);
+    const bioInput = screen.getByPlaceholderText(/Write a short bio/i);
+    const skillsInput = screen.getByPlaceholderText(/E.g. React, TypeScript, CSS/i);
     const projectTitleInput = screen.getByPlaceholderText(/Project Title/i);
+    const projectDescInput = screen.getByPlaceholderText(/Project Description/i);
 
-    expect(nameInput).toHaveValue('');
-    expect(projectTitleInput).toHaveValue('');
-
-    // ✅ Fill all fields
     fireEvent.change(nameInput, { target: { value: 'Pravesh' } });
-    fireEvent.change(screen.getByPlaceholderText(/Enter your email/i), {
-      target: { value: 'pravesh@example.com' },
-    });
-    fireEvent.change(screen.getByPlaceholderText(/Write a short bio/i), {
-      target: { value: 'Frontend Developer' },
-    });
-    fireEvent.change(screen.getByPlaceholderText(/E.g. React, TypeScript, CSS/i), {
-      target: { value: 'React, Tailwind' },
-    });
-    fireEvent.change(projectTitleInput, {
-      target: { value: 'Devfolio' },
-    });
-    fireEvent.change(screen.getByPlaceholderText(/Project Description/i), {
-      target: { value: 'A portfolio builder for developers.' },
-    });
+    fireEvent.change(emailInput, { target: { value: 'pravesh@example.com' } });
+    fireEvent.change(bioInput, { target: { value: 'Frontend Developer' } });
+    fireEvent.change(skillsInput, { target: { value: 'React, Tailwind' } });
+    fireEvent.change(projectTitleInput, { target: { value: 'Devfolio' } });
+    fireEvent.change(projectDescInput, { target: { value: 'A portfolio builder for developers.' } });
 
-    // ✅ Click submit button that might show "Submit" or "Loading..."
-    fireEvent.click(screen.getByRole('button', { name: /submit|loading\.{0,3}/i }));
+    fireEvent.click(screen.getByRole('button', { name: /submit|loading/i }));
 
-    // ✅ Wait for form to reset
-    // await waitFor(() => {
-    //   expect(projectTitleInput).toHaveValue('');
-    //   expect(screen.getByPlaceholderText(/Project Title/i)).toHaveValue('');
-    // });
-    await waitFor(
-      () => {
-        const projectInput = screen.getByPlaceholderText(/Project Title/i);
-        expect(projectInput).toHaveValue('');
-      },
-      { timeout: 2000 } // allow a bit more time than the setTimeout
-    );
+    await waitFor(() => {
+      expect(nameInput).toHaveValue('');
+      expect(screen.getByPlaceholderText(/Project Title/i)).toHaveValue('');
+    }, { timeout: 2000 });
   });
 
   test('shows alert if form is incomplete', () => {
     render(<DevfolioForm />);
-    fireEvent.click(screen.getByRole('button', { name: /submit|loading\.{0,3}/i }));
+    fireEvent.click(screen.getByRole('button', { name: /submit|loading/i }));
 
     expect(window.alert).toHaveBeenCalledWith('All fields are required.');
   });

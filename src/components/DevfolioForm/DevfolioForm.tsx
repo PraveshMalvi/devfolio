@@ -1,14 +1,26 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useState } from 'react';
 import { useDevfolioStore } from '../../store/useDevfolioStore';
 
-function DevfolioForm() {
+type Project = {
+  title: string;
+  description: string;
+};
+
+type DevfolioFormState = {
+  name: string;
+  email: string;
+  bio: string;
+  skills: string;
+  projects: Project[];
+};
+
+const DevfolioForm = () => {
   const {
     setName,
     setEmail,
     setBio,
     setSkills,
-    projects,
     addProject,
     resetProjects,
     setLoading,
@@ -20,21 +32,10 @@ function DevfolioForm() {
     email: '',
     bio: '',
     skills: '',
-    projects: [
-      {
-        title: '',
-        description: '',
-      },
-    ],
+    projects: [{ title: '', description: '' }],
   };
 
-  const [params, setParams] = useState(initialValues);
-
-  useEffect(() => {
-    if (projects.length === 0 || params.projects.length === 0) {
-      addProject({ title: '', description: '' });
-    }
-  }, [projects.length, params.projects.length, addProject]);
+  const [params, setParams] = useState<DevfolioFormState>(initialValues); 
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -92,6 +93,8 @@ function DevfolioForm() {
       setParams(initialValues);
       setLoading(false);
     }, 1500);
+
+    console.log('params', params)
   };
 
   return (

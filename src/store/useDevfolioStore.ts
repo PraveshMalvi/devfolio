@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-type Project = {
+export type Project = {
   title: string;
   description: string;
 };
@@ -37,6 +37,6 @@ type DevfolioState = {
       set((state) => ({
         projects: [...state.projects, project],
       })),
-    resetProjects: () => set({ projects: [{ title: '', description: '' }] }),
+    resetProjects: () => set({ projects: [] }),
   }));
   
