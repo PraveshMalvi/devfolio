@@ -4,7 +4,6 @@ import { useDevfolioStore } from '../../store/useDevfolioStore';
 
 describe('Home Page', () => {
   beforeEach(() => {
-    // Set Zustand store
     useDevfolioStore.setState({
       name: 'John Doe',
       email: 'john@example.com',
@@ -36,7 +35,6 @@ describe('Home Page', () => {
       target: { value: 'React, Zustand' },
     });
 
-    // Use getAllByText and check if it's at least present once
     expect(screen.getAllByText('John Doe').length).toBeGreaterThan(0);
     expect(screen.getAllByText('john@example.com').length).toBeGreaterThan(0);
     expect(screen.getAllByText('Loves to build apps with React').length).toBeGreaterThan(0);

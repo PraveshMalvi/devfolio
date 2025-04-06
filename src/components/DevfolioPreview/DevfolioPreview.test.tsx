@@ -1,4 +1,3 @@
-// DevfolioPreview.test.tsx
 import { render, screen } from '@testing-library/react';
 import DevfolioPreview from './DevfolioPreview';
 import { useDevfolioStore } from '../../store/useDevfolioStore';

@@ -1,9 +1,19 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useState } from 'react';
 import { useDevfolioStore } from '../../store/useDevfolioStore';
 
 function DevfolioForm() {
-  const { setName, setEmail, setBio, setSkills, addProject, resetProjects } = useDevfolioStore();
+  const {
+    setName,
+    setEmail,
+    setBio,
+    setSkills,
+    projects,
+    addProject,
+    resetProjects,
+    setLoading,
+    loading,
+  } = useDevfolioStore();
 
   const initialValues = {
     name: '',
@@ -19,6 +29,12 @@ function DevfolioForm() {
   };
 
   const [params, setParams] = useState(initialValues);
+
+  useEffect(() => {
+    if (projects.length === 0 || params.projects.length === 0) {
+      addProject({ title: '', description: '' });
+    }
+  }, [projects.length, params.projects.length, addProject]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -62,16 +78,20 @@ function DevfolioForm() {
       return;
     }
 
-    setName(name);
-    setEmail(email);
-    setBio(bio);
-    setSkills(skills.split(',').map((skill) => skill.trim()));
+    setLoading(true);
 
-    resetProjects()
+    setTimeout(() => {
+      setName(name);
+      setEmail(email);
+      setBio(bio);
+      setSkills(skills.split(',').map((skill) => skill.trim()));
 
-    projects.forEach((p) => addProject(p));
+      resetProjects();
+      projects.forEach((p) => addProject(p));
 
-    setParams(initialValues)
+      setParams(initialValues);
+      setLoading(false);
+    }, 1500);
   };
 
   return (
@@ -157,7 +177,7 @@ function DevfolioForm() {
         </div>
 
         <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded-lg mt-4">
-          Submit
+          {loading ? 'Loading...' : 'Submit'}
         </button>
       </form>
     </div>

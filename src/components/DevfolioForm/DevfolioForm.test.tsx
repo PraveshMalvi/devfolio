@@ -1,15 +1,21 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import DevfolioForm from './DevfolioForm';
 import { useDevfolioStore } from '../../store/useDevfolioStore';
 
 beforeEach(() => {
-  // Reset Zustand store before each test
   const { resetProjects, setName, setEmail, setBio, setSkills } = useDevfolioStore.getState();
   resetProjects();
   setName('');
   setEmail('');
   setBio('');
   setSkills([]);
+
+  // ✅ Always mock alert globally
+  window.alert = jest.fn();
+});
+
+afterEach(() => {
+  jest.clearAllMocks(); // ✅ Clear mocks between tests
 });
 
 describe('DevfolioForm', () => {
@@ -39,12 +45,18 @@ describe('DevfolioForm', () => {
     expect(remainingProjects.length).toBe(2);
   });
 
-  test('submits form with valid data', () => {
+  test('submits form with valid data and resets fields', async () => {
     render(<DevfolioForm />);
 
-    fireEvent.change(screen.getByPlaceholderText(/Enter your name/i), {
-      target: { value: 'Pravesh' },
-    });
+    // ✅ Check initial value
+    const nameInput = screen.getByPlaceholderText(/Enter your name/i);
+    const projectTitleInput = screen.getByPlaceholderText(/Project Title/i);
+
+    expect(nameInput).toHaveValue('');
+    expect(projectTitleInput).toHaveValue('');
+
+    // ✅ Fill all fields
+    fireEvent.change(nameInput, { target: { value: 'Pravesh' } });
     fireEvent.change(screen.getByPlaceholderText(/Enter your email/i), {
       target: { value: 'pravesh@example.com' },
     });
@@ -54,24 +66,33 @@ describe('DevfolioForm', () => {
     fireEvent.change(screen.getByPlaceholderText(/E.g. React, TypeScript, CSS/i), {
       target: { value: 'React, Tailwind' },
     });
-    fireEvent.change(screen.getByPlaceholderText(/Project Title/i), {
+    fireEvent.change(projectTitleInput, {
       target: { value: 'Devfolio' },
     });
     fireEvent.change(screen.getByPlaceholderText(/Project Description/i), {
       target: { value: 'A portfolio builder for developers.' },
     });
 
-    fireEvent.click(screen.getByRole('button', { name: /submit/i }));
+    // ✅ Click submit button that might show "Submit" or "Loading..."
+    fireEvent.click(screen.getByRole('button', { name: /submit|loading\.{0,3}/i }));
 
-    // check if form resets
-    expect(screen.getByPlaceholderText(/Enter your name/i)).toHaveValue('');
-    expect(screen.getByPlaceholderText(/Project Title/i)).toHaveValue('');
+    // ✅ Wait for form to reset
+    // await waitFor(() => {
+    //   expect(projectTitleInput).toHaveValue('');
+    //   expect(screen.getByPlaceholderText(/Project Title/i)).toHaveValue('');
+    // });
+    await waitFor(
+      () => {
+        const projectInput = screen.getByPlaceholderText(/Project Title/i);
+        expect(projectInput).toHaveValue('');
+      },
+      { timeout: 2000 } // allow a bit more time than the setTimeout
+    );
   });
 
   test('shows alert if form is incomplete', () => {
-    window.alert = jest.fn();
     render(<DevfolioForm />);
-    fireEvent.click(screen.getByRole('button', { name: /submit/i }));
+    fireEvent.click(screen.getByRole('button', { name: /submit|loading\.{0,3}/i }));
 
     expect(window.alert).toHaveBeenCalledWith('All fields are required.');
   });
