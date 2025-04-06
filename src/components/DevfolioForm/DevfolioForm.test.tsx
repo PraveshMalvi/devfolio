@@ -32,7 +32,6 @@ describe('DevfolioForm', () => {
     render(<DevfolioForm />);
     const addBtn = screen.getByText(/Add Project \+/i);
 
-    // Add two new project fields (total should become 3)
     fireEvent.click(addBtn);
     fireEvent.click(addBtn);
 
