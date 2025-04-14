@@ -17,6 +17,7 @@ describe('Home Page', () => {
     expect(screen.getByPlaceholderText(/Enter your name/i)).toBeInTheDocument();
     expect(screen.getByPlaceholderText(/Enter your email/i)).toBeInTheDocument();
     expect(screen.getByPlaceholderText(/Write a short bio/i)).toBeInTheDocument();
+    expect(screen.getByPlaceholderText(/E.g. React, TypeScript, CSS/i)).toBeInTheDocument();
   });
 
   test('updates preview when form inputs change', () => {

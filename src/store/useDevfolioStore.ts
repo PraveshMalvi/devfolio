@@ -11,8 +11,8 @@ type DevfolioState = {
     bio: string;
     skills: string[];
     projects: Project[];
-    loading: boolean; // <-- new
-    setLoading: (loading: boolean) => void; // <-- new
+    loading: boolean;
+    setLoading: (loading: boolean) => void;
     setName: (name: string) => void;
     setEmail: (email: string) => void;
     setBio: (bio: string) => void;
@@ -27,8 +27,8 @@ type DevfolioState = {
     bio: '',
     skills: [],
     projects: [],
-    loading: false, // <-- new
-    setLoading: (loading) => set({ loading }), // <-- new
+    loading: false,
+    setLoading: (loading) => set({ loading }),
     setName: (name) => set({ name }),
     setEmail: (email) => set({ email }),
     setBio: (bio) => set({ bio }),
